@@ -1,0 +1,24 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "8b985cb04a9c69afc7823d1e695e479211be471d5bd02e4416675f0c78415356"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_version": "3.6"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "sportsdb-backend": {
+            "path": "."
+        }
+    },
+    "develop": {}
+}
