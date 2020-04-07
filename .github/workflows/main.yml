@@ -18,7 +18,7 @@ jobs:
               run: docker ps
 
             - name: wait the datastore with sportsdb is up and ready to be used
-              run: docker exec ci_tests pipenv run wait_datastore
+              run: docker-compose run ci_tests pipenv run wait_datastore
 
             - name: show docker-compose logs
               run: docker-compose logs --tail 100
