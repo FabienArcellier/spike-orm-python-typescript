@@ -7,11 +7,9 @@ the goal of this spike is to validate a backend architecture based on GraphQL AP
 
 I have used [sportsdb](http://sportsdb.org/sd) as datasource to populate postgresql database.
 
+![](docs/datastore_view.png)
+
 ## references
-
-* [link1](http://link1/)
-
-    description of link1
 
 ## step 1 : ...
 

@@ -1,0 +1,25 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+
+    build:
+
+        runs-on: ubuntu-latest
+        env: []
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: build docker-compose
+              run: docker-compose up -d
+
+            - name: check running containers
+              run: docker ps
+
+            - name: wait the datastore with sportsdb is up and ready to be used
+              run: docker exec ci_tests pipenv run wait_datastore
+
+            - name: show docker-compose logs
+              run: docker-compose logs --tail 100
