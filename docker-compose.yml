@@ -29,5 +29,13 @@ services:
             dockerfile: Dockerfile # optional
         environment:
             - DATASTORE_HOST=datastore
-        volumes:
-            - ./ci_tests:/app
+
+    sportsdb_backend_python:
+        container_name: sportsdb_backend_python
+        build:
+            context: sportsdb_backend_python
+            dockerfile: Dockerfile # optional
+        environment:
+            - DATASTORE_HOST=datastore
+        ports:
+            - "4000:4000"

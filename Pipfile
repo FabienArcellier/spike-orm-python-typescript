@@ -6,10 +6,6 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-sportsdb-backend = {path = ".", editable=true}
 
 [requires]
 python_version = "3.6"
-
-[scripts]
-start="uvicorn --host 0.0.0.0 --port 4000 sportsdb_backend.server:app"

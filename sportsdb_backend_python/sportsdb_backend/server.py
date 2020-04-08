@@ -1,14 +1,8 @@
-from ariadne import QueryType, gql, make_executable_schema
+from ariadne import QueryType, ObjectType, gql, make_executable_schema
 from ariadne.asgi import GraphQL
 
-from sportsdb_backend import datastore
+from sportsdb_backend.api import query
 
-engine = datastore.get_engine()
-session = datastore.get_session(engine)
 
-type_defs = gql("""type Query { hello: String! }""")
-
-query = QueryType()
-
-schema = make_executable_schema(type_defs, query)
+schema = make_executable_schema(query.type_defs(), query.type())
 app = GraphQL(schema)

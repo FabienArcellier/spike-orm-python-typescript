@@ -31,4 +31,18 @@ step.
 
 * take a look on [wait_datastory.py](ci_tests/ci_tests/wait)
 
-## step 3 : Implement ORM stack
+## step 3 : Implement ORM stack with sqlalchemy and ariadne
+
+There is an automatic mapping between the SQLAlchemy item, Ariadne and the schema.
+I don't have to write api entity for every class. I just have to declare the query and mutation.
+An automatic cast is done when we change the type from the database.
+
+* see [query.py](sportsdb_backend_python/sportsdb_backend/api/query.py)
+
+The `uvicornserver` is not resilient on query error. I have to investigate it.
+
+I have used `sqlacodegen` to build [entities](sportsdb_backend_python/sportsdb_backend/entities.py) from the database.
+The result is ok, but I think the automapper approach is more interesting.
+
+## step 4 : Implement ORM stack with
+
