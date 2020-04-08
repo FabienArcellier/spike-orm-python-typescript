@@ -1,4 +1,6 @@
-## spike
+## Use graphql service to expose and manipulate data from a database
+
+![.github/workflows/main.yml](https://github.com/FabienArcellier/spike-orm-python-typescript/workflows/.github/workflows/main.yml/badge.svg)
 
 the goal of this spike is to validate a backend architecture based on GraphQL API and ORM for postgresql.
 
