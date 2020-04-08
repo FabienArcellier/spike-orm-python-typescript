@@ -10,6 +10,8 @@ setup(
     ],
     install_requires = [
         'ariadne',
+        'psycopg2-binary',
+        'SQLAlchemy',
         'uvicorn'
     ],
 )
