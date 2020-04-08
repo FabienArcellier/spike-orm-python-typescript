@@ -41,7 +41,8 @@ An automatic cast is done when we change the type from the database.
 
 * see [query.py](sportsdb_backend_python/sportsdb_backend/api/query.py)
 
-The `uvicornserver` is not resilient on query error. I have to investigate it.
+The `uvicorn server` is not resilient on query error. I have to investigate it. If the query is not done properly on the database, the server is not able to
+respond to any other query. That's crap.
 
 I have used `sqlacodegen` to build [entities](sportsdb_backend_python/sportsdb_backend/entities.py) from the database.
 The result is ok, but I think the automapper approach is more interesting.
