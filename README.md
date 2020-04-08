@@ -1,6 +1,6 @@
 ## Use graphql service to expose and manipulate data from a database
 
-![.github/workflows/main.yml](https://github.com/FabienArcellier/spike-orm-python-typescript/workflows/.github/workflows/main.yml/badge.svg)
+![CI](https://github.com/FabienArcellier/spike-orm-python-typescript/workflows/CI/badge.svg)
 
 the goal of this spike is to validate a backend architecture based on GraphQL API and ORM for postgresql.
 
@@ -46,5 +46,5 @@ The `uvicornserver` is not resilient on query error. I have to investigate it.
 I have used `sqlacodegen` to build [entities](sportsdb_backend_python/sportsdb_backend/entities.py) from the database.
 The result is ok, but I think the automapper approach is more interesting.
 
-## step 4 : Implement ORM stack with
+## step 4 : Implement ORM stack with Prisma and Apollo Server
 
