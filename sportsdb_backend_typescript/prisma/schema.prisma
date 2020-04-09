@@ -1,0 +1,1709 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model addresses {
+  building      String?
+  country       String?
+  county        String?
+  district      String?
+  floor         String?
+  id            Int       @default(autoincrement()) @unique
+  language      String?
+  locality      String?
+  location_id   Int
+  neighborhood  String?
+  postal_code   String?
+  region        String?
+  street        String?
+  street_number String?
+  street_prefix String?
+  street_suffix String?
+  suite         String?
+  locations     locations @relation(fields: [location_id], references: [id])
+
+  @@index([locality], name: "idx_addresses_1")
+  @@index([region], name: "idx_addresses_2")
+  @@index([postal_code], name: "idx_addresses_3")
+  @@index([location_id], name: "idx_fk_add_loc_id__loc_id")
+}
+
+model affiliation_phases {
+  affiliation_id                                                        Int
+  ancestor_affiliation_id                                               Int?
+  end_date_time                                                         DateTime?
+  end_season_id                                                         Int?
+  id                                                                    Int           @default(autoincrement()) @unique
+  start_date_time                                                       DateTime?
+  start_season_id                                                       Int?
+  affiliations_affiliation_phases_affiliation_idToaffiliations          affiliations  @relation("affiliation_phases_affiliation_idToaffiliations", fields: [affiliation_id], references: [id])
+  affiliations_affiliation_phases_ancestor_affiliation_idToaffiliations affiliations? @relation("affiliation_phases_ancestor_affiliation_idToaffiliations", fields: [ancestor_affiliation_id], references: [id])
+  seasons_affiliation_phases_end_season_idToseasons                     seasons?      @relation("affiliation_phases_end_season_idToseasons", fields: [end_season_id], references: [id])
+  seasons_affiliation_phases_start_season_idToseasons                   seasons?      @relation("affiliation_phases_start_season_idToseasons", fields: [start_season_id], references: [id])
+}
+
+model affiliations {
+  affiliation_key                                                             String
+  affiliation_type                                                            String?
+  id                                                                          Int                  @default(autoincrement()) @unique
+  publisher_id                                                                Int
+  publishers                                                                  publishers           @relation(fields: [publisher_id], references: [id])
+  affiliation_phases_affiliation_phases_affiliation_idToaffiliations          affiliation_phases[] @relation("affiliation_phases_affiliation_idToaffiliations")
+  affiliation_phases_affiliation_phases_ancestor_affiliation_idToaffiliations affiliation_phases[] @relation("affiliation_phases_ancestor_affiliation_idToaffiliations")
+  positions                                                                   positions[]
+  seasons                                                                     seasons[]
+  standings                                                                   standings[]
+  standing_subgroups                                                          standing_subgroups[]
+  team_phases                                                                 team_phases[]
+
+  @@index([affiliation_key], name: "idx_affiliations_1")
+  @@index([affiliation_type], name: "idx_affiliations_2")
+  @@index([publisher_id], name: "idx_fk_aff_pub_id__pub_id")
+}
+
+// The underlying table does not contain a unique identifier and can therefore currently not be handled.
+// model affiliations_documents {
+  // affiliation_id Int
+  // document_id    Int
+  // affiliations   affiliations @relation(fields: [affiliation_id], references: [id])
+  // documents      documents    @relation(fields: [document_id], references: [id])
+// }
+
+// The underlying table does not contain a unique identifier and can therefore currently not be handled.
+// model affiliations_events {
+  // affiliation_id Int
+  // event_id       Int
+  // affiliations   affiliations @relation(fields: [affiliation_id], references: [id])
+  // events         events       @relation(fields: [event_id], references: [id])
+// }
+
+// The underlying table does not contain a unique identifier and can therefore currently not be handled.
+// model affiliations_media {
+  // affiliation_id Int
+  // media_id       Int
+  // affiliations   affiliations @relation(fields: [affiliation_id], references: [id])
+  // media          media        @relation(fields: [media_id], references: [id])
+// }
+
+model american_football_action_participants {
+  american_football_action_play_id Int
+  field_line                       Int?
+  id                               Int                            @default(autoincrement()) @unique
+  participant_role                 String
+  person_id                        Int
+  score_credit                     Int?
+  score_type                       String?
+  yardage                          Int?
+  yards_gained                     Int?
+  american_football_action_plays   american_football_action_plays @relation(fields: [american_football_action_play_id], references: [id])
+  persons                          persons                        @relation(fields: [person_id], references: [id])
+
+  @@index([participant_role], name: "idx_american_football_action_participants_1")
+  @@index([score_type], name: "idx_american_football_action_participants_2")
+  @@index([american_football_action_play_id], name: "idx_fk_ame_foo_act_par_ame_foo_act_pla_id__ame_foo_act_pla_id")
+  @@index([person_id], name: "idx_fk_ame_foo_act_par_per_id__per_id")
+}
+
+model american_football_action_plays {
+  american_football_event_state_id      Int
+  comment                               String?
+  drive_result                          String?
+  id                                    Int                                     @default(autoincrement()) @unique
+  play_type                             String?
+  points                                Int?
+  score_attempt_type                    String?
+  american_football_event_states        american_football_event_states          @relation(fields: [american_football_event_state_id], references: [id])
+  american_football_action_participants american_football_action_participants[]
+
+  @@index([play_type], name: "idx_american_football_action_plays_1")
+  @@index([score_attempt_type], name: "idx_american_football_action_plays_2")
+  @@index([drive_result], name: "idx_american_football_action_plays_3")
+  @@index([american_football_event_state_id], name: "idx_fk_ame_foo_act_pla_ame_foo_eve_sta_id__ame_foo_eve_sta_id")
+}
+
+model american_football_defensive_stats {
+  id                      Int     @default(autoincrement()) @unique
+  interceptions_average   String?
+  interceptions_longest   String?
+  interceptions_total     String?
+  interceptions_touchdown String?
+  interceptions_yards     String?
+  passes_defensed         String?
+  quarterback_hurries     String?
+  sacks_total             String?
+  sacks_yards             String?
+  tackles_assists         String?
+  tackles_solo            String?
+  tackles_total           String?
+}
+
+model american_football_down_progress_stats {
+  conversions_fourth_down            String?
+  conversions_fourth_down_attempts   String?
+  conversions_fourth_down_percentage String?
+  conversions_third_down             String?
+  conversions_third_down_attempts    String?
+  conversions_third_down_percentage  String?
+  first_downs_pass                   String?
+  first_downs_penalty                String?
+  first_downs_run                    String?
+  first_downs_total                  String?
+  id                                 Int     @default(autoincrement()) @unique
+}
+
+model american_football_event_states {
+  clock_state                    String?
+  context                        String?
+  current_state                  Int?
+  distance_for_1st_down          Int?
+  down                           Int?
+  event_id                       Int
+  field_line                     Int?
+  field_side                     String?
+  id                             Int                              @default(autoincrement()) @unique
+  period_time_elapsed            String?
+  period_time_remaining          String?
+  period_value                   Int?
+  sequence_number                Int?
+  team_in_possession_id          Int?
+  events                         events                           @relation(fields: [event_id], references: [id])
+  teams                          teams?                           @relation(fields: [team_in_possession_id], references: [id])
+  american_football_action_plays american_football_action_plays[]
+
+  @@index([current_state], name: "idx_american_football_event_states_1")
+  @@index([event_id], name: "idx_fk_ame_foo_eve_sta_eve_id__eve_id")
+}
+
+model american_football_fumbles_stats {
+  fumbles_committed             String?
+  fumbles_forced                String?
+  fumbles_lost                  String?
+  fumbles_opposing_committed    String?
+  fumbles_opposing_lost         String?
+  fumbles_opposing_recovered    String?
+  fumbles_opposing_yards_gained String?
+  fumbles_own_committed         String?
+  fumbles_own_lost              String?
+  fumbles_own_recovered         String?
+  fumbles_own_yards_gained      String?
+  fumbles_recovered             String?
+  fumbles_yards_gained          String?
+  id                            Int     @default(autoincrement()) @unique
+}
+
+model american_football_offensive_stats {
+  id                                Int     @default(autoincrement()) @unique
+  offensive_plays_average_yards_per String?
+  offensive_plays_number            String?
+  offensive_plays_yards             String?
+  possession_duration               String?
+  turnovers_giveaway                String?
+}
+
+model american_football_passing_stats {
+  id                              Int     @default(autoincrement()) @unique
+  passer_rating                   String?
+  passes_attempts                 String?
+  passes_average_yards_per        String?
+  passes_completions              String?
+  passes_interceptions            String?
+  passes_interceptions_percentage String?
+  passes_longest                  String?
+  passes_percentage               String?
+  passes_touchdowns               String?
+  passes_touchdowns_percentage    String?
+  passes_yards_gross              String?
+  passes_yards_lost               String?
+  passes_yards_net                String?
+  receptions_average_yards_per    String?
+  receptions_first_down           String?
+  receptions_longest              String?
+  receptions_total                String?
+  receptions_touchdowns           String?
+  receptions_yards                String?
+}
+
+model american_football_penalties_stats {
+  id                  Int     @default(autoincrement()) @unique
+  penalties_total     String?
+  penalty_first_downs String?
+  penalty_yards       String?
+}
+
+model american_football_rushing_stats {
+  id                        Int     @default(autoincrement()) @unique
+  rushes_attempts           String?
+  rushes_first_down         String?
+  rushes_longest            String?
+  rushes_touchdowns         String?
+  rushes_yards              String?
+  rushing_average_yards_per String?
+}
+
+model american_football_sacks_against_stats {
+  id                  Int     @default(autoincrement()) @unique
+  sacks_against_total String?
+  sacks_against_yards String?
+}
+
+model american_football_scoring_stats {
+  extra_points_attempts          String?
+  extra_points_blocked           String?
+  extra_points_made              String?
+  extra_points_missed            String?
+  field_goal_attempts            String?
+  field_goals_blocked            String?
+  field_goals_made               String?
+  field_goals_missed             String?
+  id                             Int     @default(autoincrement()) @unique
+  safeties_against               String?
+  touchbacks_total               String?
+  touchdowns_defensive           String?
+  touchdowns_passing             String?
+  touchdowns_rushing             String?
+  touchdowns_special_teams       String?
+  touchdowns_total               String?
+  two_point_conversions_attempts String?
+  two_point_conversions_made     String?
+}
+
+model american_football_special_teams_stats {
+  fair_catches                        String?
+  id                                  Int     @default(autoincrement()) @unique
+  punts_average                       String?
+  punts_blocked                       String?
+  punts_inside_20                     String?
+  punts_inside_20_percentage          String?
+  punts_longest                       String?
+  punts_total                         String?
+  punts_yards_gross                   String?
+  punts_yards_net                     String?
+  returns_kickoff_average             String?
+  returns_kickoff_longest             String?
+  returns_kickoff_total               String?
+  returns_kickoff_touchdown           String?
+  returns_kickoff_yards               String?
+  returns_punt_average                String?
+  returns_punt_longest                String?
+  returns_punt_total                  String?
+  returns_punt_touchdown              String?
+  returns_punt_yards                  String?
+  returns_total                       String?
+  returns_yards                       String?
+  touchbacks_interceptions            String?
+  touchbacks_interceptions_percentage String?
+  touchbacks_kickoffs                 String?
+  touchbacks_kickoffs_percentage      String?
+  touchbacks_punts                    String?
+  touchbacks_punts_percentage         String?
+  touchbacks_total                    String?
+  touchbacks_total_percentage         String?
+}
+
+model baseball_action_contact_details {
+  baseball_action_pitch_id Int
+  comment                  String?
+  id                       Int                     @default(autoincrement()) @unique
+  location                 String?
+  strength                 String?
+  trajectory_coordinates   String?
+  trajectory_formula       String?
+  velocity                 Int?
+  baseball_action_pitches  baseball_action_pitches @relation(fields: [baseball_action_pitch_id], references: [id])
+}
+
+model baseball_action_pitches {
+  ball_type                       String?
+  baseball_action_play_id         Int
+  baseball_defensive_group_id     Int?
+  comment                         String?
+  id                              Int                               @default(autoincrement()) @unique
+  pitch_location                  String?
+  pitch_type                      String?
+  pitch_velocity                  Int?
+  sequence_number                 Int?
+  strike_type                     String?
+  trajectory_coordinates          String?
+  trajectory_formula              String?
+  umpire_call                     String?
+  baseball_action_plays           baseball_action_plays             @relation(fields: [baseball_action_play_id], references: [id])
+  baseball_defensive_group        baseball_defensive_group?         @relation(fields: [baseball_defensive_group_id], references: [id])
+  baseball_action_contact_details baseball_action_contact_details[]
+
+  @@index([umpire_call], name: "idx_baseball_action_pitches_1")
+  @@index([pitch_type], name: "idx_baseball_action_pitches_2")
+  @@index([baseball_defensive_group_id], name: "idx_fk_bas_act_pit_bas_def_gro_id__bas_def_gro_id")
+}
+
+model baseball_action_plays {
+  baseball_defensive_group_id Int?
+  baseball_event_state_id     Int
+  comment                     String?
+  earned_runs_scored          String?
+  id                          Int                       @default(autoincrement()) @unique
+  notation                    String?
+  notation_yaml               String?
+  outs_recorded               Int?
+  play_type                   String?
+  rbi                         Int?
+  runner_on_first_advance     Int?
+  runner_on_second_advance    Int?
+  runner_on_third_advance     Int?
+  runs_scored                 Int?
+  baseball_event_states       baseball_event_states     @relation(fields: [baseball_event_state_id], references: [id])
+  baseball_action_pitches     baseball_action_pitches[]
+
+  @@index([play_type], name: "idx_baseball_action_plays_1")
+  @@index([baseball_event_state_id], name: "idx_fk_bas_act_pla_bas_eve_sta_id__bas_eve_sta_id")
+}
+
+model baseball_action_substitutions {
+  baseball_event_state_id                                                         Int
+  comment                                                                         String?
+  id                                                                              Int                   @default(autoincrement()) @unique
+  person_original_id                                                              Int?
+  person_original_lineup_slot                                                     Int?
+  person_original_position_id                                                     Int?
+  person_replacing_id                                                             Int?
+  person_replacing_lineup_slot                                                    Int?
+  person_replacing_position_id                                                    Int?
+  person_type                                                                     String?
+  sequence_number                                                                 Int?
+  substitution_reason                                                             String?
+  baseball_event_states                                                           baseball_event_states @relation(fields: [baseball_event_state_id], references: [id])
+  persons_baseball_action_substitutions_person_original_idTopersons               persons?              @relation("baseball_action_substitutions_person_original_idTopersons", fields: [person_original_id], references: [id])
+  positions_baseball_action_substitutions_person_original_position_idTopositions  positions?            @relation("baseball_action_substitutions_person_original_position_idTopositions", fields: [person_original_position_id], references: [id])
+  persons_baseball_action_substitutions_person_replacing_idTopersons              persons?              @relation("baseball_action_substitutions_person_replacing_idTopersons", fields: [person_replacing_id], references: [id])
+  positions_baseball_action_substitutions_person_replacing_position_idTopositions positions?            @relation("baseball_action_substitutions_person_replacing_position_idTopositions", fields: [person_replacing_position_id], references: [id])
+}
+
+model baseball_defensive_group {
+  id                         Int                          @default(autoincrement()) @unique
+  baseball_action_pitches    baseball_action_pitches[]
+  baseball_defensive_players baseball_defensive_players[]
+}
+
+model baseball_defensive_players {
+  baseball_defensive_group_id Int
+  id                          Int                      @default(autoincrement()) @unique
+  player_id                   Int
+  position_id                 Int
+  baseball_defensive_group    baseball_defensive_group @relation(fields: [baseball_defensive_group_id], references: [id])
+  persons                     persons                  @relation(fields: [player_id], references: [id])
+  positions                   positions                @relation(fields: [position_id], references: [id])
+}
+
+model baseball_defensive_stats {
+  assists                      Int?
+  defensive_average            Float?
+  double_plays                 Int?
+  errors                       Int?
+  errors_catchers_interference Int?
+  errors_passed_ball           Int?
+  fielding_percentage          Float?
+  id                           Int    @default(autoincrement()) @unique
+  putouts                      Int?
+  triple_plays                 Int?
+}
+
+model baseball_event_states {
+  at_bat_number                                              Int?
+  balls                                                      Int?
+  batter_id                                                  Int?
+  batter_side                                                String?
+  context                                                    String?
+  current_state                                              Int?
+  event_id                                                   Int
+  id                                                         Int                             @default(autoincrement()) @unique
+  inning_half                                                String?
+  inning_value                                               Int?
+  outs                                                       Int?
+  pitcher_id                                                 Int?
+  runner_on_first                                            Int?
+  runner_on_first_id                                         Int?
+  runner_on_second                                           Int?
+  runner_on_second_id                                        Int?
+  runner_on_third                                            Int?
+  runner_on_third_id                                         Int?
+  runs_this_inning_half                                      Int?
+  sequence_number                                            Int?
+  strikes                                                    Int?
+  persons_baseball_event_states_batter_idTopersons           persons?                        @relation("baseball_event_states_batter_idTopersons", fields: [batter_id], references: [id])
+  events                                                     events                          @relation(fields: [event_id], references: [id])
+  persons_baseball_event_states_pitcher_idTopersons          persons?                        @relation("baseball_event_states_pitcher_idTopersons", fields: [pitcher_id], references: [id])
+  persons_baseball_event_states_runner_on_first_idTopersons  persons?                        @relation("baseball_event_states_runner_on_first_idTopersons", fields: [runner_on_first_id], references: [id])
+  persons_baseball_event_states_runner_on_second_idTopersons persons?                        @relation("baseball_event_states_runner_on_second_idTopersons", fields: [runner_on_second_id], references: [id])
+  persons_baseball_event_states_runner_on_third_idTopersons  persons?                        @relation("baseball_event_states_runner_on_third_idTopersons", fields: [runner_on_third_id], references: [id])
+  baseball_action_plays                                      baseball_action_plays[]
+  baseball_action_substitutions                              baseball_action_substitutions[]
+
+  @@index([current_state], name: "idx_baseball_event_states_1")
+  @@index([event_id], name: "idx_fk_bas_eve_sta_eve_id__eve_id")
+}
+
+model baseball_offensive_stats {
+  at_bats                        Int?
+  at_bats_per_home_run           Float?
+  at_bats_per_rbi                Float?
+  average                        Float?
+  bases_on_balls                 Int?
+  defensive_interferance_reaches Int?
+  doubles                        Int?
+  grand_slams                    Int?
+  grounded_into_double_play      Int?
+  hit_by_pitch                   Int?
+  hits                           Int?
+  hits_extra_base                Int?
+  home_runs                      Int?
+  id                             Int    @default(autoincrement()) @unique
+  left_in_scoring_position       Int?
+  left_on_base                   Int?
+  moved_up                       Int?
+  on_base_percentage             Float?
+  on_base_plus_slugging          Float?
+  plate_appearances              Int?
+  plate_appearances_per_home_run Float?
+  plate_appearances_per_rbi      Float?
+  rbi                            Int?
+  runs_scored                    Int?
+  sac_bunts                      Int?
+  sac_flies                      Int?
+  singles                        Int?
+  slugging_percentage            Float?
+  stolen_bases                   Int?
+  stolen_bases_average           Float?
+  stolen_bases_caught            Int?
+  strikeouts                     Int?
+  total_bases                    Int?
+  triples                        Int?
+}
+
+model baseball_pitching_stats {
+  balks                      Int?
+  bases_on_balls             Int?
+  bases_on_balls_intentional Int?
+  doubles_allowed            Int?
+  earned_runs                Int?
+  era                        Float?
+  errors_hit_with_pitch      Int?
+  errors_wild_pitch          Int?
+  event_credit               String?
+  games_complete             Int?
+  games_finished             Int?
+  hits                       Int?
+  home_runs_allowed          Int?
+  id                         Int     @default(autoincrement()) @unique
+  inherited_runners_scored   Int?
+  innings_pitched            String?
+  losses                     Int?
+  number_of_pitches          Int?
+  pick_offs                  Int?
+  runs_allowed               Int?
+  save_credit                String?
+  saves                      Int?
+  shutouts                   Int?
+  singles_allowed            Int?
+  strikeouts                 Int?
+  strikeout_to_bb_ratio      Float?
+  triples_allowed            Int?
+  unearned_runs              Int?
+  winning_percentage         Float?
+  wins                       Int?
+}
+
+model basketball_defensive_stats {
+  blocks_per_game String?
+  blocks_total    String?
+  id              Int     @default(autoincrement()) @unique
+  steals_per_game String?
+  steals_total    String?
+}
+
+model basketball_event_states {
+  context               String?
+  current_state         Int?
+  event_id              Int
+  id                    Int     @default(autoincrement()) @unique
+  period_time_elapsed   String?
+  period_time_remaining String?
+  period_value          String?
+  sequence_number       Int?
+  events                events  @relation(fields: [event_id], references: [id])
+
+  @@index([event_id], name: "idx_fk_events_basketball_event_states")
+}
+
+model basketball_offensive_stats {
+  assists_per_game                  String?
+  assists_total                     String?
+  field_goals_attempted             Int?
+  field_goals_attempted_per_game    String?
+  field_goals_made                  Int?
+  field_goals_percentage            String?
+  field_goals_percentage_adjusted   String?
+  field_goals_per_game              String?
+  free_throws_attempted             String?
+  free_throws_attempted_per_game    String?
+  free_throws_made                  String?
+  free_throws_percentage            String?
+  free_throws_per_game              String?
+  id                                Int     @default(autoincrement()) @unique
+  points_scored_in_paint            String?
+  points_scored_off_turnovers       String?
+  points_scored_on_fast_break       String?
+  points_scored_on_second_chance    String?
+  points_scored_per_game            String?
+  points_scored_total               String?
+  three_pointers_attempted          Int?
+  three_pointers_attempted_per_game String?
+  three_pointers_made               Int?
+  three_pointers_percentage         String?
+  three_pointers_per_game           String?
+  turnovers_per_game                String?
+  turnovers_total                   String?
+}
+
+model basketball_rebounding_stats {
+  id                      Int     @default(autoincrement()) @unique
+  rebounds_defensive      String?
+  rebounds_offensive      String?
+  rebounds_per_game       String?
+  rebounds_total          String?
+  team_rebounds_defensive String?
+  team_rebounds_offensive String?
+  team_rebounds_per_game  String?
+  team_rebounds_total     String?
+}
+
+model basketball_team_stats {
+  fouls_total     String?
+  id              Int     @default(autoincrement()) @unique
+  largest_lead    String?
+  timeouts_left   String?
+  turnover_margin String?
+}
+
+model bookmakers {
+  bookmaker_key                  String?
+  id                             Int                              @default(autoincrement()) @unique
+  location_id                    Int?
+  publisher_id                   Int
+  locations                      locations?                       @relation(fields: [location_id], references: [id])
+  publishers                     publishers                       @relation(fields: [publisher_id], references: [id])
+  wagering_moneylines            wagering_moneylines[]
+  wagering_odds_lines            wagering_odds_lines[]
+  wagering_runlines              wagering_runlines[]
+  wagering_straight_spread_lines wagering_straight_spread_lines[]
+  wagering_total_score_lines     wagering_total_score_lines[]
+}
+
+model core_person_stats {
+  events_played             Int?
+  events_started            Int?
+  id                        Int        @default(autoincrement()) @unique
+  position_id               Int?
+  time_played_event         String?
+  time_played_event_average String?
+  time_played_total         String?
+  positions                 positions? @relation(fields: [position_id], references: [id])
+}
+
+model core_stats {
+  id                        Int     @default(autoincrement()) @unique
+  score                     String?
+  score_attempts            String?
+  score_attempts_opposing   String?
+  score_opposing            String?
+  score_percentage          String?
+  score_percentage_opposing String?
+}
+
+// The underlying table does not contain a unique identifier and can therefore currently not be handled.
+// model db_info {
+  // version String @default(dbgenerated())
+
+  // @@index([version], name: "idx_db_info_1")
+// }
+
+model display_names {
+  abbreviation String?
+  alias        String?
+  entity_id    Int
+  entity_type  String
+  first_name   String?
+  full_name    String?
+  id           Int     @default(autoincrement()) @unique
+  language     String
+  last_name    String?
+  middle_name  String?
+  prefix       String?
+  short_name   String?
+  suffix       String?
+}
+
+model document_classes {
+  id                Int                 @default(autoincrement()) @unique
+  name              String?
+  document_fixtures document_fixtures[]
+
+  @@index([name], name: "idx_document_classes_1")
+}
+
+model document_contents {
+  abstract    String?
+  document_id Int
+  id          Int       @default(autoincrement()) @unique
+  sportsml    String?
+  documents   documents @relation(fields: [document_id], references: [id])
+
+  @@index([document_id], name: "idx_fk_doc_con_doc_id__doc_id")
+}
+
+model document_fixtures {
+  document_class_id        Int
+  fixture_key              String?
+  id                       Int                        @default(autoincrement()) @unique
+  name                     String?
+  publisher_id             Int
+  document_classes         document_classes           @relation(fields: [document_class_id], references: [id])
+  publishers               publishers                 @relation(fields: [publisher_id], references: [id])
+  document_fixtures_events document_fixtures_events[]
+  documents                documents[]
+
+  @@index([fixture_key], name: "idx_document_fixtures_1")
+  @@index([document_class_id], name: "idx_fk_doc_fix_doc_cla_id__doc_cla_id")
+  @@index([publisher_id], name: "idx_fk_doc_fix_pub_id__pub_id")
+}
+
+model document_fixtures_events {
+  document_fixture_id Int
+  event_id            Int
+  id                  Int               @default(autoincrement()) @unique
+  last_update         DateTime?
+  latest_document_id  Int
+  document_fixtures   document_fixtures @relation(fields: [document_fixture_id], references: [id])
+  events              events            @relation(fields: [event_id], references: [id])
+  documents           documents         @relation(fields: [latest_document_id], references: [id])
+
+  @@index([document_fixture_id], name: "idx_fk_doc_fix_eve_doc_fix_id__doc_fix_id")
+  @@index([event_id], name: "idx_fk_doc_fix_eve_eve_id__eve_id")
+  @@index([latest_document_id], name: "idx_fk_doc_fix_eve_lat_doc_id__doc_id")
+}
+
+model document_package_entry {
+  document_id         Int
+  document_package_id Int
+  headline            String?
+  id                  Int               @default(autoincrement()) @unique
+  rank                String?
+  short_headline      String?
+  documents           documents         @relation(fields: [document_id], references: [id])
+  document_packages   document_packages @relation(fields: [document_package_id], references: [id])
+}
+
+model document_packages {
+  date_time              DateTime?
+  id                     Int                      @default(autoincrement()) @unique
+  package_key            String?
+  package_name           String?
+  document_package_entry document_package_entry[]
+}
+
+model documents {
+  date_time                                     DateTime?
+  db_loading_date_time                          DateTime?
+  doc_id                                        String
+  document_fixture_id                           Int
+  id                                            Int                        @default(autoincrement()) @unique
+  language                                      String?
+  priority                                      String?
+  publisher_id                                  Int
+  revision_id                                   String?
+  source_id                                     Int?
+  stats_coverage                                String?
+  title                                         String?
+  document_fixtures                             document_fixtures          @relation(fields: [document_fixture_id], references: [id])
+  publishers_documents_publisher_idTopublishers publishers                 @relation("documents_publisher_idTopublishers", fields: [publisher_id], references: [id])
+  publishers_documents_source_idTopublishers    publishers?                @relation("documents_source_idTopublishers", fields: [source_id], references: [id])
+  document_contents                             document_contents[]
+  document_fixtures_events                      document_fixtures_events[]
+  document_package_entry                        document_package_entry[]
+  documents_media                               documents_media[]
+  latest_revisions                              latest_revisions[]
+
+  @@index([doc_id], name: "idx_documents_1")
+  @@index([date_time], name: "idx_documents_3")
+  @@index([priority], name: "idx_documents_4")
+  @@index([revision_id], name: "idx_documents_5")
+  @@index([document_fixture_id], name: "idx_fk_doc_doc_fix_id__doc_fix_id")
+  @@index([publisher_id], name: "idx_fk_doc_pub_id__pub_id")
+  @@index([source_id], name: "idx_fk_doc_sou_id__pub_id")
+}
+
+model documents_media {
+  document_id      Int
+  id               Int            @default(autoincrement()) @unique
+  media_caption_id Int
+  media_id         Int
+  documents        documents      @relation(fields: [document_id], references: [id])
+  media_captions   media_captions @relation(fields: [media_caption_id], references: [id])
+  media            media          @relation(fields: [media_id], references: [id])
+}
+
+model events {
+  attendance                     String?
+  duration                       String?
+  event_key                      String
+  event_status                   String?
+  id                             Int                              @default(autoincrement()) @unique
+  last_update                    DateTime?
+  publisher_id                   Int
+  site_alignment                 String?
+  site_id                        Int?
+  start_date_time                DateTime?
+  publishers                     publishers                       @relation(fields: [publisher_id], references: [id])
+  sites                          sites?                           @relation(fields: [site_id], references: [id])
+  american_football_event_states american_football_event_states[]
+  baseball_event_states          baseball_event_states[]
+  basketball_event_states        basketball_event_states[]
+  document_fixtures_events       document_fixtures_events[]
+  ice_hockey_event_states        ice_hockey_event_states[]
+  motor_racing_event_states      motor_racing_event_states[]
+  participants_events            participants_events[]
+  person_event_metadata          person_event_metadata[]
+  soccer_event_states            soccer_event_states[]
+  tennis_event_states            tennis_event_states[]
+  wagering_moneylines            wagering_moneylines[]
+  wagering_odds_lines            wagering_odds_lines[]
+  wagering_runlines              wagering_runlines[]
+  wagering_straight_spread_lines wagering_straight_spread_lines[]
+  wagering_total_score_lines     wagering_total_score_lines[]
+  weather_conditions             weather_conditions[]
+
+  @@index([event_key], name: "idx_events_1")
+  @@index([publisher_id], name: "idx_fk_eve_pub_id__pub_id")
+  @@index([site_id], name: "idx_fk_eve_sit_id__sit_id")
+}
+
+// The underlying table does not contain a unique identifier and can therefore currently not be handled.
+// model events_documents {
+  // document_id Int
+  // event_id    Int
+  // documents   documents @relation(fields: [document_id], references: [id])
+  // events      events    @relation(fields: [event_id], references: [id])
+// }
+
+// The underlying table does not contain a unique identifier and can therefore currently not be handled.
+// model events_media {
+  // event_id Int
+  // media_id Int
+  // events   events @relation(fields: [event_id], references: [id])
+  // media    media  @relation(fields: [media_id], references: [id])
+// }
+
+// The underlying table does not contain a unique identifier and can therefore currently not be handled.
+// model events_sub_seasons {
+  // event_id      Int
+  // sub_season_id Int
+  // events        events      @relation(fields: [event_id], references: [id])
+  // sub_seasons   sub_seasons @relation(fields: [sub_season_id], references: [id])
+// }
+
+model ice_hockey_action_participants {
+  ice_hockey_action_play_id Int
+  id                        Int    @default(autoincrement()) @unique
+  participant_role          String
+  person_id                 Int
+  point_credit              Int?
+}
+
+model ice_hockey_action_plays {
+  comment                   String?
+  ice_hockey_event_state_id Int
+  id                        Int     @default(autoincrement()) @unique
+  play_result               String?
+  play_type                 String?
+  score_attempt_type        String?
+}
+
+model ice_hockey_defensive_stats {
+  goals_against_average      String?
+  goals_empty_net_allowed    String?
+  goals_penalty_shot_allowed String?
+  goals_power_play_allowed   String?
+  goals_shootout_allowed     String?
+  goals_short_handed_allowed String?
+  hits                       String?
+  id                         Int     @default(autoincrement()) @unique
+  minutes_penalty_killing    String?
+  penalty_killing_amount     String?
+  penalty_killing_percentage String?
+  save_percentage            String?
+  saves                      String?
+  shots_blocked              String?
+  shots_penalty_shot_allowed String?
+  shots_power_play_allowed   String?
+  shots_shootout_allowed     String?
+  shutouts                   String?
+  takeaways                  String?
+}
+
+model ice_hockey_event_states {
+  context               String?
+  current_state         Int?
+  event_id              Int
+  id                    Int     @default(autoincrement()) @unique
+  period_time_elapsed   String?
+  period_time_remaining String?
+  period_value          String?
+  sequence_number       Int?
+  events                events  @relation(fields: [event_id], references: [id])
+}
+
+model ice_hockey_offensive_stats {
+  assists                       String?
+  faceoff_losses                String?
+  faceoff_win_percentage        String?
+  faceoff_wins                  String?
+  giveaways                     String?
+  goals_empty_net               String?
+  goals_even_strength           String?
+  goals_game_tying              String?
+  goals_game_winning            String?
+  goals_overtime                String?
+  goals_penalty_shot            String?
+  goals_power_play              String?
+  goals_shootout                String?
+  goals_short_handed            String?
+  id                            Int     @default(autoincrement()) @unique
+  minutes_power_play            String?
+  points                        String?
+  power_play_amount             String?
+  power_play_percentage         String?
+  scoring_chances               String?
+  shots_penalty_shot_missed     String?
+  shots_penalty_shot_percentage String?
+  shots_penalty_shot_taken      String?
+}
+
+model ice_hockey_player_stats {
+  id         Int     @default(autoincrement()) @unique
+  plus_minus String?
+}
+
+model injury_phases {
+  disabled_list   String?
+  end_date_time   DateTime?
+  id              Int       @default(autoincrement()) @unique
+  injury_comment  String?
+  injury_side     String?
+  injury_status   String?
+  injury_type     String?
+  person_id       Int
+  phase_type      String?
+  season_id       Int?
+  start_date_time DateTime?
+  persons         persons   @relation(fields: [person_id], references: [id])
+  seasons         seasons?  @relation(fields: [season_id], references: [id])
+
+  @@index([person_id], name: "idx_fk_inj_pha_per_id__per_id")
+  @@index([season_id], name: "idx_fk_inj_pha_sea_id__sea_id")
+  @@index([injury_status], name: "idx_injury_phases_2")
+  @@index([start_date_time], name: "idx_injury_phases_3")
+  @@index([end_date_time], name: "idx_injury_phases_4")
+}
+
+model key_aliases {
+  id          Int       @default(autoincrement()) @unique
+  key_id      Int
+  key_root_id Int
+  key_roots   key_roots @relation(fields: [key_root_id], references: [id])
+
+  @@index([key_id], name: "idx_key_aliases_2")
+}
+
+model key_roots {
+  id          Int           @default(autoincrement()) @unique
+  key_type    String?
+  key_aliases key_aliases[]
+
+  @@index([key_type], name: "idx_key_aliases_1")
+}
+
+model latest_revisions {
+  id                 Int       @default(autoincrement()) @unique
+  latest_document_id Int
+  revision_id        String
+  documents          documents @relation(fields: [latest_document_id], references: [id])
+
+  @@index([latest_document_id], name: "idx_fk_lat_rev_lat_doc_id__doc_id")
+  @@index([revision_id], name: "idx_latest_revisions_1")
+}
+
+model locations {
+  country_code                                     String?
+  id                                               Int          @default(autoincrement()) @unique
+  latitude                                         String?
+  longitude                                        String?
+  timezone                                         String?
+  addresses                                        addresses[]
+  bookmakers                                       bookmakers[]
+  media                                            media[]
+  persons_locationsTopersons_birth_location_id     persons[]    @relation("locationsTopersons_birth_location_id")
+  persons_locationsTopersons_death_location_id     persons[]    @relation("locationsTopersons_death_location_id")
+  persons_locationsTopersons_hometown_location_id  persons[]    @relation("locationsTopersons_hometown_location_id")
+  persons_locationsTopersons_residence_location_id persons[]    @relation("locationsTopersons_residence_location_id")
+  sites                                            sites[]
+
+  @@index([country_code], name: "idx_locations_1")
+}
+
+model media {
+  creation_location_id Int
+  credit_id            Int
+  date_time            String?
+  db_loading_date_time DateTime?
+  id                   Int               @default(autoincrement()) @unique
+  media_type           String?
+  object_id            Int?
+  publisher_id         Int
+  revision_id          Int?
+  source_id            Int?
+  locations            locations         @relation(fields: [creation_location_id], references: [id])
+  persons              persons           @relation(fields: [credit_id], references: [id])
+  publishers           publishers        @relation(fields: [publisher_id], references: [id])
+  documents_media      documents_media[]
+  media_captions       media_captions[]
+  media_contents       media_contents[]
+  media_keywords       media_keywords[]
+}
+
+model media_captions {
+  caption           String?
+  caption_author_id Int
+  caption_size      String?
+  caption_type      String?
+  id                Int               @default(autoincrement()) @unique
+  language          String?
+  media_id          Int
+  persons           persons           @relation(fields: [caption_author_id], references: [id])
+  media             media             @relation(fields: [media_id], references: [id])
+  documents_media   documents_media[]
+}
+
+model media_contents {
+  duration   String?
+  file_size  String?
+  format     String?
+  height     String?
+  id         Int     @default(autoincrement()) @unique
+  media_id   Int
+  mime_type  String?
+  object     String?
+  resolution String?
+  width      String?
+  media      media   @relation(fields: [media_id], references: [id])
+}
+
+model media_keywords {
+  id       Int     @default(autoincrement()) @unique
+  keyword  String?
+  media_id Int
+  media    media   @relation(fields: [media_id], references: [id])
+}
+
+model motor_racing_event_states {
+  context         String?
+  current_state   Int?
+  event_id        Int
+  flag_state      String?
+  id              Int     @default(autoincrement()) @unique
+  lap             String?
+  laps_remaining  String?
+  sequence_number Int?
+  time_elapsed    String?
+  events          events  @relation(fields: [event_id], references: [id])
+
+  @@index([event_id], name: "idx_fk_events_motor_racing_event_states")
+}
+
+model motor_racing_qualifying_stats {
+  grid                   String?
+  id                     Int     @default(autoincrement()) @unique
+  pole_position          String?
+  pole_wins              String?
+  qualifying_position    String?
+  qualifying_speed       String?
+  qualifying_speed_units String?
+  qualifying_time        String?
+}
+
+model motor_racing_race_stats {
+  bonus               String?
+  distance_completed  String?
+  distance_leading    String?
+  distance_units      String?
+  finishes            String?
+  finishes_top_10     String?
+  finishes_top_5      String?
+  id                  Int     @default(autoincrement()) @unique
+  laps_ahead_follower String?
+  laps_behind_leader  String?
+  laps_completed      String?
+  laps_leading_total  String?
+  leads_total         String?
+  money               String?
+  money_units         String?
+  non_finishes        String?
+  points              String?
+  points_rookie       String?
+  races_leading       String?
+  speed_average       String?
+  speed_units         String?
+  starts              String?
+  status              String?
+  time                String?
+  time_ahead_follower String?
+  time_behind_leader  String?
+  wins                String?
+}
+
+model outcome_totals {
+  id                    Int                @default(autoincrement()) @unique
+  losses                String?
+  outcome_holder_id     Int?
+  outcome_holder_type   String?
+  points_difference     String?
+  points_scored_against String?
+  points_scored_for     String?
+  rank                  String?
+  standing_points       String?
+  standing_subgroup_id  Int
+  streak_duration       String?
+  streak_end            DateTime?
+  streak_start          DateTime?
+  streak_total          String?
+  streak_type           String?
+  ties                  String?
+  undecideds            String?
+  winning_percentage    String?
+  wins                  String?
+  standing_subgroups    standing_subgroups @relation(fields: [standing_subgroup_id], references: [id])
+}
+
+model participants_events {
+  alignment        String?
+  event_id         Int
+  event_outcome    String?
+  id               Int       @default(autoincrement()) @unique
+  participant_id   Int
+  participant_type String
+  rank             Int?
+  score            String?
+  events           events    @relation(fields: [event_id], references: [id])
+  periods          periods[]
+
+  @@index([event_id], name: "idx_fk_par_eve_eve_id__eve_id")
+  @@index([participant_type], name: "idx_participants_events_1")
+  @@index([participant_id], name: "idx_participants_events_2")
+  @@index([alignment], name: "idx_participants_events_3")
+  @@index([event_outcome], name: "idx_participants_events_4")
+}
+
+model periods {
+  id                   Int                 @default(autoincrement()) @unique
+  participant_event_id Int
+  period_value         String?
+  score                String?
+  participants_events  participants_events @relation(fields: [participant_event_id], references: [id])
+  sub_periods          sub_periods[]
+
+  @@index([participant_event_id], name: "idx_fk_per_par_eve_id__par_eve_id")
+}
+
+model person_event_metadata {
+  event_id             Int
+  health               String?
+  id                   Int        @default(autoincrement()) @unique
+  lineup_slot          Int?
+  lineup_slot_sequence Int?
+  person_id            Int
+  position_id          Int?
+  role_id              Int?
+  status               String?
+  team_id              Int?
+  weight               String?
+  events               events     @relation(fields: [event_id], references: [id])
+  persons              persons    @relation(fields: [person_id], references: [id])
+  positions            positions? @relation(fields: [position_id], references: [id])
+  roles                roles?     @relation(fields: [role_id], references: [id])
+  teams                teams?     @relation(fields: [team_id], references: [id])
+
+  @@index([event_id], name: "idx_fk_per_eve_met_eve_id__eve_id")
+  @@index([person_id], name: "idx_fk_per_eve_met_per_id__per_id")
+  @@index([position_id], name: "idx_fk_per_eve_met_pos_id__pos_id")
+  @@index([role_id], name: "idx_fk_per_eve_met_rol_id__rol_id")
+  @@index([team_id], name: "idx_fk_teams_person_event_metadata")
+  @@index([status], name: "idx_person_event_metadata_1")
+}
+
+model person_phases {
+  end_date_time                                  DateTime?
+  end_season_id                                  Int?
+  entry_reason                                   String?
+  exit_reason                                    String?
+  height                                         String?
+  id                                             Int        @default(autoincrement()) @unique
+  membership_id                                  Int
+  membership_type                                String
+  person_id                                      Int
+  phase_status                                   String?
+  regular_position_depth                         String?
+  regular_position_id                            Int?
+  role_id                                        Int?
+  role_status                                    String?
+  selection_level                                Int?
+  selection_overall                              Int?
+  selection_sublevel                             Int?
+  start_date_time                                DateTime?
+  start_season_id                                Int?
+  uniform_number                                 String?
+  weight                                         String?
+  seasons_person_phases_end_season_idToseasons   seasons?   @relation("person_phases_end_season_idToseasons", fields: [end_season_id], references: [id])
+  persons                                        persons    @relation(fields: [person_id], references: [id])
+  positions                                      positions? @relation(fields: [regular_position_id], references: [id])
+  roles                                          roles?     @relation(fields: [role_id], references: [id])
+  seasons_person_phases_start_season_idToseasons seasons?   @relation("person_phases_start_season_idToseasons", fields: [start_season_id], references: [id])
+
+  @@index([person_id], name: "idx_fk_per_pha_per_id__per_id")
+  @@index([regular_position_id], name: "idx_fk_per_pha_reg_pos_id__pos_id")
+  @@index([membership_type], name: "idx_person_phases_1")
+  @@index([membership_id], name: "idx_person_phases_2")
+  @@index([phase_status], name: "idx_person_phases_3")
+}
+
+model persons {
+  birth_date                                                                               String?
+  birth_location_id                                                                        Int?
+  death_date                                                                               String?
+  death_location_id                                                                        Int?
+  gender                                                                                   String?
+  hometown_location_id                                                                     Int?
+  id                                                                                       Int                                     @default(autoincrement()) @unique
+  person_key                                                                               String
+  publisher_id                                                                             Int
+  residence_location_id                                                                    Int?
+  locations_locationsTopersons_birth_location_id                                           locations?                              @relation("locationsTopersons_birth_location_id", fields: [birth_location_id], references: [id])
+  locations_locationsTopersons_death_location_id                                           locations?                              @relation("locationsTopersons_death_location_id", fields: [death_location_id], references: [id])
+  locations_locationsTopersons_hometown_location_id                                        locations?                              @relation("locationsTopersons_hometown_location_id", fields: [hometown_location_id], references: [id])
+  publishers                                                                               publishers                              @relation(fields: [publisher_id], references: [id])
+  locations_locationsTopersons_residence_location_id                                       locations?                              @relation("locationsTopersons_residence_location_id", fields: [residence_location_id], references: [id])
+  american_football_action_participants                                                    american_football_action_participants[]
+  baseball_action_substitutions_baseball_action_substitutions_person_original_idTopersons  baseball_action_substitutions[]         @relation("baseball_action_substitutions_person_original_idTopersons")
+  baseball_action_substitutions_baseball_action_substitutions_person_replacing_idTopersons baseball_action_substitutions[]         @relation("baseball_action_substitutions_person_replacing_idTopersons")
+  baseball_defensive_players                                                               baseball_defensive_players[]
+  baseball_event_states_baseball_event_states_batter_idTopersons                           baseball_event_states[]                 @relation("baseball_event_states_batter_idTopersons")
+  baseball_event_states_baseball_event_states_pitcher_idTopersons                          baseball_event_states[]                 @relation("baseball_event_states_pitcher_idTopersons")
+  baseball_event_states_baseball_event_states_runner_on_first_idTopersons                  baseball_event_states[]                 @relation("baseball_event_states_runner_on_first_idTopersons")
+  baseball_event_states_baseball_event_states_runner_on_second_idTopersons                 baseball_event_states[]                 @relation("baseball_event_states_runner_on_second_idTopersons")
+  baseball_event_states_baseball_event_states_runner_on_third_idTopersons                  baseball_event_states[]                 @relation("baseball_event_states_runner_on_third_idTopersons")
+  injury_phases                                                                            injury_phases[]
+  media                                                                                    media[]
+  media_captions                                                                           media_captions[]
+  person_event_metadata                                                                    person_event_metadata[]
+  person_phases                                                                            person_phases[]
+
+  @@index([publisher_id], name: "idx_fk_per_pub_id__pub_id")
+  @@index([person_key], name: "idx_persons_1")
+}
+
+// The underlying table does not contain a unique identifier and can therefore currently not be handled.
+// model persons_documents {
+  // document_id Int
+  // person_id   Int
+  // documents   documents @relation(fields: [document_id], references: [id])
+  // persons     persons   @relation(fields: [person_id], references: [id])
+// }
+
+// The underlying table does not contain a unique identifier and can therefore currently not be handled.
+// model persons_media {
+  // media_id  Int
+  // person_id Int
+  // media     media   @relation(fields: [media_id], references: [id])
+  // persons   persons @relation(fields: [person_id], references: [id])
+// }
+
+model positions {
+  abbreviation                                                                                        String
+  affiliation_id                                                                                      Int
+  id                                                                                                  Int                             @default(autoincrement()) @unique
+  affiliations                                                                                        affiliations                    @relation(fields: [affiliation_id], references: [id])
+  baseball_action_substitutions_baseball_action_substitutions_person_original_position_idTopositions  baseball_action_substitutions[] @relation("baseball_action_substitutions_person_original_position_idTopositions")
+  baseball_action_substitutions_baseball_action_substitutions_person_replacing_position_idTopositions baseball_action_substitutions[] @relation("baseball_action_substitutions_person_replacing_position_idTopositions")
+  baseball_defensive_players                                                                          baseball_defensive_players[]
+  core_person_stats                                                                                   core_person_stats[]
+  person_event_metadata                                                                               person_event_metadata[]
+  person_phases                                                                                       person_phases[]
+
+  @@index([affiliation_id], name: "idx_fk_pos_aff_id__aff_id")
+  @@index([abbreviation], name: "idx_positions_1")
+}
+
+model publishers {
+  id                                           Int                 @default(autoincrement()) @unique
+  publisher_key                                String
+  publisher_name                               String?
+  affiliations                                 affiliations[]
+  bookmakers                                   bookmakers[]
+  document_fixtures                            document_fixtures[]
+  documents_documents_publisher_idTopublishers documents[]         @relation("documents_publisher_idTopublishers")
+  documents_documents_source_idTopublishers    documents[]         @relation("documents_source_idTopublishers")
+  events                                       events[]
+  media                                        media[]
+  persons                                      persons[]
+  seasons                                      seasons[]
+  sites                                        sites[]
+  standings                                    standings[]
+  teams                                        teams[]
+
+  @@index([publisher_key], name: "idx_publishers_1")
+}
+
+model roles {
+  comment               String?
+  id                    Int                     @default(autoincrement()) @unique
+  role_key              String
+  role_name             String?
+  person_event_metadata person_event_metadata[]
+  person_phases         person_phases[]
+  team_phases           team_phases[]
+
+  @@index([role_key], name: "idx_roles_1")
+}
+
+model seasons {
+  end_date_time                                                  DateTime?
+  id                                                             Int                  @default(autoincrement()) @unique
+  league_id                                                      Int
+  publisher_id                                                   Int
+  season_key                                                     Int
+  start_date_time                                                DateTime?
+  affiliations                                                   affiliations         @relation(fields: [league_id], references: [id])
+  publishers                                                     publishers           @relation(fields: [publisher_id], references: [id])
+  affiliation_phases_affiliation_phases_end_season_idToseasons   affiliation_phases[] @relation("affiliation_phases_end_season_idToseasons")
+  affiliation_phases_affiliation_phases_start_season_idToseasons affiliation_phases[] @relation("affiliation_phases_start_season_idToseasons")
+  injury_phases                                                  injury_phases[]
+  person_phases_person_phases_end_season_idToseasons             person_phases[]      @relation("person_phases_end_season_idToseasons")
+  person_phases_person_phases_start_season_idToseasons           person_phases[]      @relation("person_phases_start_season_idToseasons")
+  sub_seasons                                                    sub_seasons[]
+  team_phases_seasonsToteam_phases_end_season_id                 team_phases[]        @relation("seasonsToteam_phases_end_season_id")
+  team_phases_seasonsToteam_phases_start_season_id               team_phases[]        @relation("seasonsToteam_phases_start_season_id")
+
+  @@index([league_id], name: "idx_fk_sea_lea_id__aff_id")
+  @@index([publisher_id], name: "idx_fk_sea_pub_id__pub_id")
+  @@index([season_key], name: "idx_seasons_1")
+}
+
+model sites {
+  id           Int        @default(autoincrement()) @unique
+  location_id  Int?
+  publisher_id Int
+  site_key     Int
+  locations    locations? @relation(fields: [location_id], references: [id])
+  publishers   publishers @relation(fields: [publisher_id], references: [id])
+  events       events[]
+  teams        teams[]
+
+  @@index([location_id], name: "idx_fk_sit_loc_id__loc_id")
+  @@index([publisher_id], name: "idx_fk_sit_pub_id__pub_id")
+  @@index([site_key], name: "idx_sites_1")
+}
+
+model soccer_defensive_stats {
+  catches_punches            String?
+  goals_against_average      String?
+  goals_against_total        String?
+  goals_penalty_shot_allowed String?
+  id                         Int     @default(autoincrement()) @unique
+  save_percentage            String?
+  saves                      String?
+  shots_blocked              String?
+  shots_on_goal_total        String?
+  shots_penalty_shot_allowed String?
+  shots_shootout_allowed     String?
+  shots_shootout_total       String?
+  shutouts                   String?
+}
+
+model soccer_event_states {
+  context               String?
+  current_state         Int?
+  event_id              Int
+  id                    Int     @default(autoincrement()) @unique
+  minutes_elapsed       String?
+  period_minute_elapsed String?
+  period_time_elapsed   String?
+  period_time_remaining String?
+  period_value          String?
+  sequence_number       Int?
+  events                events  @relation(fields: [event_id], references: [id])
+
+  @@index([event_id], name: "idx_fk_events_soccer_event_states")
+}
+
+model soccer_foul_stats {
+  caution_points_pending String?
+  caution_points_total   String?
+  cautions_pending       String?
+  cautions_total         String?
+  ejections_total        String?
+  fouls_commited         String?
+  fouls_suffered         String?
+  id                     Int     @default(autoincrement()) @unique
+}
+
+model soccer_offensive_stats {
+  assists_game_tying            String?
+  assists_game_winning          String?
+  assists_overtime              String?
+  assists_total                 String?
+  corner_kicks                  String?
+  giveaways                     String?
+  goals_game_tying              String?
+  goals_game_winning            String?
+  goals_overtime                String?
+  goals_shootout                String?
+  goals_total                   String?
+  hat_tricks                    String?
+  id                            Int     @default(autoincrement()) @unique
+  offsides                      String?
+  points                        String?
+  shots_hit_frame               String?
+  shots_on_goal_total           String?
+  shots_penalty_shot_missed     String?
+  shots_penalty_shot_percentage String?
+  shots_penalty_shot_scored     String?
+  shots_penalty_shot_taken      String?
+  shots_shootout_missed         String?
+  shots_shootout_percentage     String?
+  shots_shootout_scored         String?
+  shots_shootout_taken          String?
+  shots_total                   String?
+}
+
+model standings {
+  affiliation_id       Int
+  alignment_scope      String?
+  competition_scope    String?
+  competition_scope_id String?
+  duration_scope       String?
+  id                   Int                  @default(autoincrement()) @unique
+  last_updated         String?
+  publisher_id         Int
+  scoping_label        String?
+  site_scope           String?
+  source               String?
+  standing_type        String?
+  sub_season_id        Int
+  affiliations         affiliations         @relation(fields: [affiliation_id], references: [id])
+  publishers           publishers           @relation(fields: [publisher_id], references: [id])
+  sub_seasons          sub_seasons          @relation(fields: [sub_season_id], references: [id])
+  standing_subgroups   standing_subgroups[]
+}
+
+model standing_subgroups {
+  affiliation_id Int
+  id             Int              @default(autoincrement()) @unique
+  standing_id    Int
+  affiliations   affiliations     @relation(fields: [affiliation_id], references: [id])
+  standings      standings        @relation(fields: [standing_id], references: [id])
+  outcome_totals outcome_totals[]
+}
+
+model stats {
+  context              String
+  id                   Int     @default(autoincrement()) @unique
+  stat_coverage_id     Int?
+  stat_coverage_type   String?
+  stat_holder_id       Int?
+  stat_holder_type     String?
+  stat_repository_id   Int
+  stat_repository_type String?
+
+  @@index([stat_repository_type], name: "idx_stats_1")
+  @@index([stat_repository_id], name: "idx_stats_2")
+  @@index([stat_holder_type], name: "idx_stats_3")
+  @@index([stat_holder_id], name: "idx_stats_4")
+  @@index([stat_coverage_type], name: "idx_stats_5")
+  @@index([stat_coverage_id], name: "idx_stats_6")
+  @@index([context], name: "idx_stats_7")
+}
+
+model sub_periods {
+  id               Int     @default(autoincrement()) @unique
+  period_id        Int
+  score            String?
+  sub_period_value String?
+  periods          periods @relation(fields: [period_id], references: [id])
+
+  @@index([period_id], name: "idx_fk_sub_per_per_id__per_id")
+}
+
+model sub_seasons {
+  end_date_time   DateTime?
+  id              Int         @default(autoincrement()) @unique
+  season_id       Int
+  start_date_time DateTime?
+  sub_season_key  String
+  sub_season_type String
+  seasons         seasons     @relation(fields: [season_id], references: [id])
+  standings       standings[]
+
+  @@index([season_id], name: "idx_fk_sub_sea_sea_id__sea_id")
+  @@index([sub_season_key], name: "idx_sub_seasons_1")
+  @@index([sub_season_type], name: "idx_sub_seasons_2")
+}
+
+model team_american_football_stats {
+  average_starting_position String?
+  id                        Int     @default(autoincrement()) @unique
+  time_of_possession        String?
+  timeouts                  String?
+  turnover_ratio            String?
+  yards_per_attempt         String?
+}
+
+model team_phases {
+  affiliation_id                               Int
+  end_date_time                                String?
+  end_season_id                                Int?
+  id                                           Int          @default(autoincrement()) @unique
+  phase_status                                 String?
+  role_id                                      Int?
+  start_date_time                              String?
+  start_season_id                              Int?
+  team_id                                      Int
+  affiliations                                 affiliations @relation(fields: [affiliation_id], references: [id])
+  seasons_seasonsToteam_phases_end_season_id   seasons?     @relation("seasonsToteam_phases_end_season_id", fields: [end_season_id], references: [id])
+  roles                                        roles?       @relation(fields: [role_id], references: [id])
+  seasons_seasonsToteam_phases_start_season_id seasons?     @relation("seasonsToteam_phases_start_season_id", fields: [start_season_id], references: [id])
+  teams                                        teams        @relation(fields: [team_id], references: [id])
+}
+
+model teams {
+  home_site_id                   Int?
+  id                             Int                              @default(autoincrement()) @unique
+  publisher_id                   Int
+  team_key                       String
+  sites                          sites?                           @relation(fields: [home_site_id], references: [id])
+  publishers                     publishers                       @relation(fields: [publisher_id], references: [id])
+  american_football_event_states american_football_event_states[]
+  person_event_metadata          person_event_metadata[]
+  team_phases                    team_phases[]
+  wagering_moneylines            wagering_moneylines[]
+  wagering_odds_lines            wagering_odds_lines[]
+  wagering_runlines              wagering_runlines[]
+  wagering_straight_spread_lines wagering_straight_spread_lines[]
+  wagering_total_score_lines     wagering_total_score_lines[]
+}
+
+// The underlying table does not contain a unique identifier and can therefore currently not be handled.
+// model teams_documents {
+  // document_id Int
+  // team_id     Int
+  // documents   documents @relation(fields: [document_id], references: [id])
+  // teams       teams     @relation(fields: [team_id], references: [id])
+// }
+
+// The underlying table does not contain a unique identifier and can therefore currently not be handled.
+// model teams_media {
+  // media_id Int
+  // team_id  Int
+  // media    media @relation(fields: [media_id], references: [id])
+  // teams    teams @relation(fields: [team_id], references: [id])
+// }
+
+model tennis_action_points {
+  id              Int     @default(autoincrement()) @unique
+  sequence_number String?
+  sub_period_id   String?
+  win_type        String?
+}
+
+model tennis_action_volleys {
+  id                      Int     @default(autoincrement()) @unique
+  landing_location        String?
+  result                  String?
+  sequence_number         String?
+  spin_type               String?
+  swing_type              String?
+  tennis_action_points_id Int?
+  trajectory_details      String?
+}
+
+model tennis_event_states {
+  context            String?
+  current_state      Int?
+  event_id           Int
+  game               String?
+  id                 Int     @default(autoincrement()) @unique
+  receiver_person_id Int?
+  receiver_score     String?
+  sequence_number    Int?
+  server_person_id   Int?
+  server_score       String?
+  service_number     String?
+  tennis_set         String?
+  events             events  @relation(fields: [event_id], references: [id])
+
+  @@index([event_id], name: "idx_fk_events_tennis_event_states")
+}
+
+model tennis_return_stats {
+  break_points_converted               String?
+  break_points_converted_pct           String?
+  break_points_played                  String?
+  first_service_return_points_won      String?
+  first_service_return_points_won_pct  String?
+  id                                   Int     @default(autoincrement()) @unique
+  matches_played                       String?
+  return_games_played                  String?
+  return_games_won                     String?
+  return_games_won_pct                 String?
+  returns_played                       String?
+  second_service_return_points_won     String?
+  second_service_return_points_won_pct String?
+}
+
+model tennis_service_stats {
+  aces                          String?
+  break_points_played           String?
+  break_points_saved            String?
+  break_points_saved_pct        String?
+  first_service_points_won      String?
+  first_service_points_won_pct  String?
+  first_services_good           String?
+  first_services_good_pct       String?
+  id                            Int     @default(autoincrement()) @unique
+  matches_played                String?
+  second_service_points_won     String?
+  second_service_points_won_pct String?
+  service_games_played          String?
+  service_games_won             String?
+  service_games_won_pct         String?
+  services_played               String?
+}
+
+model wagering_moneylines {
+  bookmaker_id Int
+  comment      String?
+  date_time    DateTime?
+  event_id     Int
+  id           Int        @default(autoincrement()) @unique
+  line         String?
+  line_opening String?
+  person_id    Int?
+  prediction   String?
+  rotation_key String?
+  team_id      Int
+  vigorish     String?
+  bookmakers   bookmakers @relation(fields: [bookmaker_id], references: [id])
+  events       events     @relation(fields: [event_id], references: [id])
+  teams        teams      @relation(fields: [team_id], references: [id])
+}
+
+model wagering_odds_lines {
+  bookmaker_id       Int
+  comment            String?
+  date_time          DateTime?
+  denominator        String?
+  event_id           Int
+  id                 Int        @default(autoincrement()) @unique
+  numerator          String?
+  payout_amount      String?
+  payout_calculation String?
+  person_id          Int?
+  prediction         String?
+  rotation_key       String?
+  team_id            Int
+  bookmakers         bookmakers @relation(fields: [bookmaker_id], references: [id])
+  events             events     @relation(fields: [event_id], references: [id])
+  teams              teams      @relation(fields: [team_id], references: [id])
+}
+
+model wagering_runlines {
+  bookmaker_id Int
+  comment      String?
+  date_time    DateTime?
+  event_id     Int
+  id           Int        @default(autoincrement()) @unique
+  line         String?
+  line_opening String?
+  line_value   String?
+  person_id    Int?
+  prediction   String?
+  rotation_key String?
+  team_id      Int
+  vigorish     String?
+  bookmakers   bookmakers @relation(fields: [bookmaker_id], references: [id])
+  events       events     @relation(fields: [event_id], references: [id])
+  teams        teams      @relation(fields: [team_id], references: [id])
+}
+
+model wagering_straight_spread_lines {
+  bookmaker_id       Int
+  comment            String?
+  date_time          DateTime?
+  event_id           Int
+  id                 Int        @default(autoincrement()) @unique
+  line_value         String?
+  line_value_opening String?
+  person_id          Int?
+  prediction         String?
+  rotation_key       String?
+  team_id            Int
+  vigorish           String?
+  bookmakers         bookmakers @relation(fields: [bookmaker_id], references: [id])
+  events             events     @relation(fields: [event_id], references: [id])
+  teams              teams      @relation(fields: [team_id], references: [id])
+}
+
+model wagering_total_score_lines {
+  bookmaker_id  Int
+  comment       String?
+  date_time     DateTime?
+  event_id      Int
+  id            Int        @default(autoincrement()) @unique
+  line_over     String?
+  line_under    String?
+  person_id     Int?
+  prediction    String?
+  rotation_key  String?
+  team_id       Int
+  total         String?
+  total_opening String?
+  vigorish      String?
+  bookmakers    bookmakers @relation(fields: [bookmaker_id], references: [id])
+  events        events     @relation(fields: [event_id], references: [id])
+  teams         teams      @relation(fields: [team_id], references: [id])
+}
+
+model weather_conditions {
+  clouds            String?
+  event_id          Int
+  humidity          String?
+  id                Int     @default(autoincrement()) @unique
+  temperature       String?
+  temperature_units String?
+  weather_code      String?
+  wind_direction    String?
+  wind_velocity     String?
+  events            events  @relation(fields: [event_id], references: [id])
+
+  @@index([event_id], name: "idx_fk_wea_con_eve_id__eve_id")
+}

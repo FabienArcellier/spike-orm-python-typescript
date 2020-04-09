@@ -1,0 +1,18 @@
+type Query {
+    """
+    the list of players available in tournament
+    """
+    players: [Players]
+    american_football_defensive_stats: [AmericanFootballDefensiveStats]
+}
+
+type Players {
+    id: Int
+    entity_type: String
+    full_name: String
+}
+
+type AmericanFootballDefensiveStats {
+    id: Int
+    tackles_total: Int
+}

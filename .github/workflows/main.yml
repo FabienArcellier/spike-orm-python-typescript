@@ -25,3 +25,6 @@ jobs:
 
             - name: validate the implementation of sportsd_backend_python
               run: docker-compose run ci_tests pipenv run test_sports_backend_python
+
+            - name: validate the implementation of sportsd_backend_typescript
+              run: docker-compose run ci_tests pipenv run test_sportsd_backend_typescript

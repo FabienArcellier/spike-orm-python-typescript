@@ -24,7 +24,7 @@ def resolve_players(obj, info):
     return session.query(t_display_names).filter(t_display_names.columns.entity_type=='persons').limit(20)
 
 @query.field("american_football_defensive_stats")
-def resolve_display_names(obj, info):
+def resolve_american_football_defensive_stats(obj, info):
     return session.query(t_american_football_defensive_stats).limit(20)
 
 def type():

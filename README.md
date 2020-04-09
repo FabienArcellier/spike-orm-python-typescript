@@ -58,3 +58,15 @@ Two scenarios in this case :
 
 ## step 4 : Implement ORM stack with Prisma and Apollo Server
 
+The generation of client on prisma est native. It works fine. There is an automatic mapping between Prisma and
+Apollo Server and the schema. I don't have to write api entity for every class. I just have to declare the query and mutation.
+An automatic cast is done when we change the type from the database.
+
+Prisma client in my IDE is not useful because there is no autocomplete on the column, only on the object. I don't have autocomplete
+on the CRUD operation of Prisma. According to what I read on internet, I should have it.
+
+To override the connection string of database, I had to rewrite the variable `DATABASE_URL`. I can't inject it in Prisma Client.
+I lost lot of time finding resources about that on internet.
+
+
+

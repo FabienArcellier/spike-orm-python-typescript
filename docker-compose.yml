@@ -40,3 +40,13 @@ services:
             - DATASTORE_HOST=datastore
         ports:
             - "4000:4000"
+
+    sportsdb_backend_typescript:
+        container_name: sportsdb_backend_typescript
+        build:
+            context: sportsdb_backend_typescript
+            dockerfile: Dockerfile # optional
+        environment:
+            - DATASTORE_HOST=datastore
+        ports:
+            - "5000:5000"
