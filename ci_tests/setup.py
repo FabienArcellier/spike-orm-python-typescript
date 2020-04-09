@@ -13,11 +13,13 @@ setup(
     entry_points = {
         'console_scripts': [
             'wait_datastore = ci_tests.wait_datastore:main',
+            'test_sports_backend_python = ci_tests.test_sports_backend_python:main',
         ],
     },
     install_requires = [
         'click',
         'psycopg2-binary',
+        'requests',
         'retrying'
     ],
 )
