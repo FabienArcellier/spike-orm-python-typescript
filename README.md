@@ -42,10 +42,19 @@ An automatic cast is done when we change the type from the database.
 * see [query.py](sportsdb_backend_python/sportsdb_backend/api/query.py)
 
 The `uvicorn server` is not resilient on query error. I have to investigate it. If the query is not done properly on the database, the server is not able to
-respond to any other query. That's crap.
+respond to any other query. I think the session of sqlalchemy has been corrupted. I have to investigate a way to monitor and renew the sqlalchemy session.
 
 I have used `sqlacodegen` to build [entities](sportsdb_backend_python/sportsdb_backend/entities.py) from the database.
 The result is ok, but I think the automapper approach is more interesting.
+
+### step 3.1 : implement probes and utility url with ariadne
+
+I didn't find a way to add custom route on ariadne. In `asgi.py`, there is a direct mapping on the application and the handler for http request.
+
+Two scenarios in this case :
+
+* use `starlette` as webapplication over `ariadne` : https://ariadnegraphql.org/docs/starlette-integration
+* use a webserver (`nginx`) as reverse proxy in front to route the call to graphql based on url mapping as `/api`.
 
 ## step 4 : Implement ORM stack with Prisma and Apollo Server
 

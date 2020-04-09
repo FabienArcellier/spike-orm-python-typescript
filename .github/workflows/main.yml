@@ -11,7 +11,7 @@ jobs:
         steps:
             - uses: actions/checkout@v2
 
-            - name: build docker-compose
+            - name: build experimentation architecture with docker-compose
               run: docker-compose up -d
 
             - name: check running containers
@@ -23,5 +23,5 @@ jobs:
             - name: show docker-compose logs
               run: docker-compose logs --tail 100
 
-            - name: curl sportsd_backend_python
+            - name: validate the implementation of sportsd_backend_python
               run: docker-compose run ci_tests pipenv run test_sports_backend_python
