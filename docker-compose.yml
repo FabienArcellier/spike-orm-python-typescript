@@ -30,6 +30,7 @@ services:
         environment:
             - DATASTORE_HOST=datastore
             - SPORTSDB_BACKEND_PYTHON_HOSTS=sportsdb_backend_python
+            - SPORTSDB_BACKEND_TYPESCRIPT_HOSTS=sportsdb_backend_typescript
 
     sportsdb_backend_python:
         container_name: sportsdb_backend_python

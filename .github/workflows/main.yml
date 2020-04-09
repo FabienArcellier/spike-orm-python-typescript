@@ -23,8 +23,8 @@ jobs:
             - name: show docker-compose logs
               run: docker-compose logs --tail 100
 
-            - name: validate the implementation of sportsd_backend_python
-              run: docker-compose run ci_tests pipenv run test_sports_backend_python
+            - name: validate the implementation of sportsdb_backend_python
+              run: docker-compose run ci_tests pipenv run python ci_tests/test_sportsdb_backend_python.py
 
-            - name: validate the implementation of sportsd_backend_typescript
-              run: docker-compose run ci_tests pipenv run test_sportsd_backend_typescript
+            - name: validate the implementation of sportsdb_backend_typescript
+              run: docker-compose run ci_tests pipenv run python ci_tests/test_sportsdb_backend_typescript.py

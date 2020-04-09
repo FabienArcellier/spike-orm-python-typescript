@@ -3,14 +3,14 @@ import unittest
 
 import requests
 
-class TestSportsBackendPython(unittest.TestCase):
+class TestSportsBackendTypescript(unittest.TestCase):
     def setUp(self):
         pass
 
     def test_players_query_should_returns_a_list_of_twenty_players(self):
         # Acts
         query = {'query': '{players {id, full_name}}'}
-        host = os.getenv('SPORTSDB_BACKEND_PYTHON_HOSTS', 'localhost')
+        host = os.getenv('SPORTSDB_BACKEND_TYPESCRIPT_HOSTS', 'localhost')
         r = requests.post(f'http://{host}:5000', json=query)
 
         # Assert

@@ -12,9 +12,7 @@ setup(
     ],
     entry_points = {
         'console_scripts': [
-            'wait_datastore = ci_tests.wait_datastore:main',
-            'test_sports_backend_python = ci_tests.test_sports_backend_python:main',
-            'test_sports_backend_typescript = ci_tests.test_sports_backend_typescript:main',
+            'wait_datastore = ci_tests.wait_datastore:main'
         ],
     },
     install_requires = [
